@@ -27,16 +27,17 @@ import com.example.android.mygarden.ui.MainActivity;
 
 public class PlantWidgetProvider extends AppWidgetProvider {
 
-    // TODO (1): Modify updateAppWidget method to take an image recourse and call
+    // COMPLETED (1): Modify updateAppWidget method to take an image recourse and call
     // setImageViewResource to update the widget’s image
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+                                int appWidgetId, int imgResource) {
 
         // Create an Intent to launch MainActivity when clicked
         Intent intent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.plant_widget);
+        views.setImageViewResource(R.id.widget_plant_image, imgResource);
         // Widgets allow click handlers to only launch pending intents
         views.setOnClickPendingIntent(R.id.widget_plant_image, pendingIntent);
         // Add the wateringservice click handler
@@ -50,12 +51,21 @@ public class PlantWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // TODO (2): Move the updateAppWidget loop to a new method called updatePlantWidgets and pass through the image recourse
+        // COMPLETED (2): Move the updateAppWidget loop to a new method called updatePlantWidgets and pass through the image recourse
         // There may be multiple widgets active, so update all of them
+
+        // COMPLETED (4): Call startActionUpdatePlantWidgets in onUpdate as well as in AddPlantActivity
+        // and PlantDetailActivity (add and delete plants)
+        PlantWateringService.startActionUpdatePlantWidgets(context);
+    }
+
+    public static void updatePlantWidgets(Context context, AppWidgetManager appWidgetManager,
+                                          int[] appWidgetIds, int imgResource) {
+
         for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
+            updateAppWidget(context, appWidgetManager, appWidgetId, imgResource);
         }
-        // TODO (4): Call startActionUpdatePlantWidgets in onUpdate as well as in AddPlantActivity and PlantDetailActivity (add and delete plants)
+
     }
 
     @Override
